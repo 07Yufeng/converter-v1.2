@@ -2,7 +2,7 @@ import streamlit as st
 from converter_toolpath_v4_hopper import convert_hp_to_mpf_text, get_conversion_report, normalize_power_head
 
 st.set_page_config(page_title="HP/LST to MPF Converter", layout="wide")
-st.title("TRUMPF HP/LST to BEaM MPF Converter v1.1")
+st.title("TRUMPF HP/LST to BEaM MPF Converter v1.2")
 
 st.sidebar.header("Conversion Settings")
 power_head_label = st.sidebar.radio(
@@ -20,10 +20,10 @@ st.sidebar.markdown("""
 """)
 
 hopper_label = st.sidebar.selectbox(
-    "Select hopper for large Z travel",
+    "Select hopper for use",
     ["Hopper 1", "Hopper 2", "Hopper 3", "Hopper 4", "Hopper 5"],
     index=2,
-    help="This hopper will be switched OFF before Z rises by more than 2 mm, then ON again before the tool comes back down."
+    help="Hopper selection"
 )
 selected_hopper = int(hopper_label.split()[-1])
 
