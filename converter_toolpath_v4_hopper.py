@@ -593,6 +593,8 @@ def parse_toolpath_lines(lines, selected_hopper=None, z_hop_threshold=2.0):
             cleaned_motion = clean_motion_or_command(code_clean)
             current_z = find_axis_numeric(cleaned_motion, "Z")
 
+            add_hopper_on_after_this_move = False
+
             if hopper_on_code and hopper_off_code and current_z is not None and last_z is not None:
                 z_delta = current_z - last_z
 
@@ -603,14 +605,18 @@ def parse_toolpath_lines(lines, selected_hopper=None, z_hop_threshold=2.0):
                     waiting_for_down_move = True
 
                 # If we previously switched OFF for a large Z rise, switch hopper ON
-                # and dwell before the first large downward move back.
+                # and dwell AFTER the first large downward move back.
                 elif waiting_for_down_move and z_delta < -z_hop_threshold:
-                    output.append({"code": hopper_on_code, "comment": None})
-                    output.append({"code": "G04 F=10", "comment": None})
-                    output.append({"blank": True})
+                    add_hopper_on_after_this_move = True
                     waiting_for_down_move = False
 
             output.append({"code": cleaned_motion, "comment": None})
+
+            if add_hopper_on_after_this_move:
+                output.append({"code": hopper_on_code, "comment": None})
+                output.append({"code": "G04 F=10", "comment": None})
+                output.append({"blank": True})
+
             if current_z is not None:
                 last_z = current_z
 
@@ -828,3 +834,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
